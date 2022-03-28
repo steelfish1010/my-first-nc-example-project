@@ -7,7 +7,7 @@ const app = require("../app");
 afterAll(() => db.end());
 beforeEach(() => seed(testData));
 
-describe("GET /api/topics", () => {
+describe.only("GET /api/topics", () => {
   test("200: returns an array", () => {
     return request(app)
       .get("/api/topics")
@@ -22,12 +22,12 @@ describe("GET /api/topics", () => {
         });
       });
   });
-  //   test("404: incorrect path returns 'path not found'", () => {
-  //     return request(app).get("/api/topic").expect(404);
-  //   });
+  test("404: incorrect path returns 'path not found'", () => {
+    return request(app).get("/api/topic").expect(404);
+  });
 });
 
-describe.only("GET /api/article/:article:id", () => {
+describe("GET /api/article/:article:id", () => {
   test("200: returns copy of requested article object", () => {
     return request(app)
       .get("/api/articles/2")
