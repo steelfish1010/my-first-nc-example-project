@@ -22,7 +22,26 @@ describe("GET /api/topics", () => {
         });
       });
   });
-  test("404: incorrect path returns 'path not found'", () => {
-    return request(app).get("/api/topic").expect(404);
+  //   test("404: incorrect path returns 'path not found'", () => {
+  //     return request(app).get("/api/topic").expect(404);
+  //   });
+});
+
+describe.only("GET /api/article/:article:id", () => {
+  test("200: returns copy of requested article object", () => {
+    return request(app)
+      .get("/api/articles/2")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.article).toEqual({
+          author: "icellusedkars",
+          title: "Sony Vaio; or, The Laptop",
+          article_id: 2,
+          body: expect.any(String),
+          topic: "mitch",
+          created_at: expect.any(String),
+          votes: 0,
+        });
+      });
   });
 });
