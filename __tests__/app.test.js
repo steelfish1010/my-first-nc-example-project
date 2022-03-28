@@ -44,4 +44,12 @@ describe.only("GET /api/article/:article:id", () => {
         });
       });
   });
+  test("404; invalid article id", () => {
+    return request(app)
+      .get("/api/articles/765")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid article_id");
+      });
+  });
 });
