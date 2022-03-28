@@ -1,6 +1,9 @@
 const db = require("../db/connection");
 
 exports.fetchArticleById = (article_id) => {
+  if (!parseInt(article_id)) {
+    return Promise.reject({ status: 400, msg: "article_id is not a number" });
+  }
   return db
     .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
     .then((res) => {

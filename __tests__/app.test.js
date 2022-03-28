@@ -7,7 +7,7 @@ const app = require("../app");
 afterAll(() => db.end());
 beforeEach(() => seed(testData));
 
-describe.only("GET /api/topics", () => {
+describe("GET /api/topics", () => {
   test("200: returns an array", () => {
     return request(app)
       .get("/api/topics")
@@ -27,7 +27,7 @@ describe.only("GET /api/topics", () => {
   });
 });
 
-describe("GET /api/article/:article:id", () => {
+describe("GET /api/article/:article_id", () => {
   test("200: returns copy of requested article object", () => {
     return request(app)
       .get("/api/articles/2")
@@ -44,12 +44,20 @@ describe("GET /api/article/:article:id", () => {
         });
       });
   });
-  test("404; invalid article id", () => {
+  test("404; article id not in database", () => {
     return request(app)
       .get("/api/articles/765")
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toBe("Invalid article_id");
+      });
+  });
+  test("400: article_id is not a number", () => {
+    return request(app)
+      .get("/api/articles/hello")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("article_id is not a number");
       });
   });
 });
