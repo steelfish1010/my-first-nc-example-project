@@ -1,5 +1,4 @@
 const express = require("express");
-const res = require("express/lib/response");
 const { getTopics } = require("./controllers/topics.controller");
 const app = express();
 const apiRouter = require("./routers/api-router");
