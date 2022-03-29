@@ -18,7 +18,7 @@ apiRouter
   });
 
 apiRouter.use((err, req, res, next) => {
-  console.log(err, "<-- err in apiRouter");
+  // console.log(err, "<-- err in apiRouter");
   next(err);
 });
 module.exports = apiRouter;

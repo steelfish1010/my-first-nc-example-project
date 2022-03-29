@@ -23,7 +23,7 @@ exports.updateArticle = async (body, article_id) => {
   SET 
   votes = votes + $1
   WHERE article_id = $2
-  RETURNING *
+  RETURNING *;
   `,
     [votes, article_id]
   );

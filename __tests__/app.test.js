@@ -103,7 +103,7 @@ describe.only("PATCH /api/articles/:article_id", () => {
       .expect(400);
     expect(res.body.msg).toBe("invalid request");
   });
-  test.only("400: inc_votes value is not number", async () => {
+  test("400: inc_votes value is not number", async () => {
     const articleUpdate = { inc_votes: "hello" };
     const res = await request(app)
       .patch("/api/articles/1")
