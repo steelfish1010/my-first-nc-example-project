@@ -55,7 +55,7 @@ describe.only("GET /api/article/:article_id", () => {
     expect(res.body.msg).toBe("Invalid article_id");
   });
   test("400: article_id is not a number", async () => {
-    const res = await request(app).get("/api/articles/hello").expect(400);
+    const res = await request(app).get("/api/articles/cheese").expect(400);
     expect(res.body.msg).toBe("article_id is not a number");
   });
 });
