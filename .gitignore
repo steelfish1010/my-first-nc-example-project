@@ -1,5 +1,5 @@
 node_modules
 .env.*
 view-db-test.txt
-view-db.dev.txt
+view-db-dev.txt
 topics-router.js
