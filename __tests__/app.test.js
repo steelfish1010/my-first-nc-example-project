@@ -23,8 +23,21 @@ describe("GET /api/topics", () => {
   });
 });
 
-describe("GET /api/article/:article_id", () => {
-  test("200: returns copy of requested article object", async () => {
+describe.only("GET /api/article/:article_id", () => {
+  test("200: returns copy of requested article object including comment count", async () => {
+    const res = await request(app).get("/api/articles/9").expect(200);
+    expect(res.body.article).toEqual({
+      author: "butter_bridge",
+      title: "They're not exactly dogs, are they?",
+      article_id: 9,
+      body: "Well? Think about it.",
+      topic: "mitch",
+      created_at: expect.any(String),
+      votes: 0,
+      comment_count: 2,
+    });
+  });
+  test("200: returns copy of requested article object which has zero comments", async () => {
     const res = await request(app).get("/api/articles/2").expect(200);
     expect(res.body.article).toEqual({
       author: "icellusedkars",
@@ -34,6 +47,7 @@ describe("GET /api/article/:article_id", () => {
       topic: "mitch",
       created_at: expect.any(String),
       votes: 0,
+      comment_count: 0,
     });
   });
   test("404; article id not in database", async () => {
@@ -41,12 +55,12 @@ describe("GET /api/article/:article_id", () => {
     expect(res.body.msg).toBe("Invalid article_id");
   });
   test("400: article_id is not a number", async () => {
-    const res = await request(app).get("/api/articles/hello").expect(400);
+    const res = await request(app).get("/api/articles/cheese").expect(400);
     expect(res.body.msg).toBe("article_id is not a number");
   });
 });
 
-describe.only("PATCH /api/articles/:article_id", () => {
+describe("PATCH /api/articles/:article_id", () => {
   test("200: responds with a copy of the updated article object", async () => {
     const articleUpdate = { inc_votes: 1 };
     const res = await request(app)
@@ -113,7 +127,7 @@ describe.only("PATCH /api/articles/:article_id", () => {
   });
 });
 
-describe.only("GET /api/users", () => {
+describe("GET /api/users", () => {
   test("200: returns array of user objects", () => {
     return request(app)
       .get("/api/users")
