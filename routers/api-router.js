@@ -1,4 +1,7 @@
-const { getArticleById } = require("../controllers/articles.controller");
+const {
+  getArticleById,
+  patchArticle,
+} = require("../controllers/articles.controller");
 const { getTopics } = require("../controllers/topics.controller");
 const { getUsers } = require("../controllers/users.controller");
 
@@ -10,14 +13,13 @@ apiRouter
   })
   .get("/topics", getTopics)
   .get("/articles/:article_id", getArticleById)
+  .patch("/articles/:article_id", patchArticle)
+  .get("/users", getUsers)
   .all("/*", (req, res) => {
     res.status(404).send({ msg: "Path not found" });
   });
 
-apiRouter.get("/users", getUsers);
-
-apiRouter.get("/*", (req, res, next) => {
-  res.status(404).send({ msg: "path not found" });
+apiRouter.use((err, req, res, next) => {
+  next(err);
 });
-
 module.exports = apiRouter;

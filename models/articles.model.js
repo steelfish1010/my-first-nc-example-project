@@ -13,3 +13,18 @@ exports.fetchArticleById = async (article_id) => {
     return res.rows[0];
   }
 };
+
+exports.updateArticle = async (body, article_id) => {
+  const votes = parseInt(body.inc_votes);
+  const res = await db.query(
+    `
+  UPDATE articles
+  SET 
+  votes = votes + $1
+  WHERE article_id = $2
+  RETURNING *;
+  `,
+    [votes, article_id]
+  );
+  return res.rows[0];
+};
