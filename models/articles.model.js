@@ -30,7 +30,7 @@ exports.fetchArticleById = async (article_id) => {
   }
 };
 
-exports.updateArticle = async (body, article_id) => {
+exports.updateArticleById = async (body, article_id) => {
   const votes = parseInt(body.inc_votes);
   const res = await db.query(
     `

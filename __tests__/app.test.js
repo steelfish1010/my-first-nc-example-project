@@ -23,7 +23,7 @@ describe("GET /api/topics", () => {
   });
 });
 
-describe.only("GET /api/article/:article_id", () => {
+describe("GET /api/article/:article_id", () => {
   test("200: returns copy of requested article object including comment count", async () => {
     const res = await request(app).get("/api/articles/9").expect(200);
     expect(res.body.article).toEqual({

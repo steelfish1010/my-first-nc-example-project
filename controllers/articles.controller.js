@@ -1,4 +1,7 @@
-const { fetchArticleById, updateArticle } = require("../models/articles.model");
+const {
+  fetchArticleById,
+  updateArticleById,
+} = require("../models/articles.model");
 
 exports.getArticleById = async (req, res, next) => {
   const { article_id } = req.params;
@@ -10,12 +13,12 @@ exports.getArticleById = async (req, res, next) => {
   }
 };
 
-exports.patchArticle = async (req, res, next) => {
+exports.patchArticleById = async (req, res, next) => {
   try {
     const { article_id } = req.params;
     const { body } = req;
     const dbQueries = [
-      updateArticle(body, article_id),
+      updateArticleById(body, article_id),
       fetchArticleById(article_id),
     ];
     const results = await Promise.all(dbQueries);
