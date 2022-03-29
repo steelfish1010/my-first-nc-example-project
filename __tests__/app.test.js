@@ -26,3 +26,23 @@ describe("GET /api/topics", () => {
     return request(app).get("/api/topic").expect(404);
   });
 });
+
+describe.only("GET /api/users", () => {
+  test("200: returns array of user objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.users.length).toBe(4);
+        expect(res.body.users[1]).toEqual({ username: "icellusedkars" });
+        res.body.users.forEach((user) => {
+          expect(user).toEqual({
+            username: expect.any(String),
+          });
+        });
+      });
+  });
+  test("404: incorrect file path", () => {
+    return request(app).get("/api/user").expect(404);
+  });
+});
