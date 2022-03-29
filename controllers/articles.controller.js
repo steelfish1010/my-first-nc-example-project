@@ -22,7 +22,7 @@ exports.patchArticle = async (req, res, next) => {
     const updatedArticle = results[0];
     res.status(200).send({ updatedArticle });
   } catch (err) {
-    console.log(err, "<-- err in controller");
+    // console.log(err, "<-- err in controller");
     next(err);
   }
 };
