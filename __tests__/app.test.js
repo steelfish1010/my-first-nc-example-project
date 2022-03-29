@@ -42,7 +42,8 @@ describe.only("GET /api/users", () => {
         });
       });
   });
-  test("404: incorrect file path", () => {
-    return request(app).get("/api/user").expect(404);
+  test("404: incorrect file path", async () => {
+    const res = await request(app).get("/api/user").expect(404);
+    expect(res.body.msg).toBe("path not found");
   });
 });
