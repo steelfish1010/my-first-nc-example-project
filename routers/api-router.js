@@ -3,6 +3,7 @@ const {
   patchArticle,
 } = require("../controllers/articles.controller");
 const { getTopics } = require("../controllers/topics.controller");
+const { getUsers } = require("../controllers/users.controller");
 
 const apiRouter = require("express").Router();
 
@@ -13,6 +14,7 @@ apiRouter
   .get("/topics", getTopics)
   .get("/articles/:article_id", getArticleById)
   .patch("/articles/:article_id", patchArticle)
+  .get("/users", getUsers)
   .all("/*", (req, res) => {
     res.status(404).send({ msg: "Path not found" });
   });
