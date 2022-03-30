@@ -14,6 +14,7 @@ apiRouter
   .get("/topics", getTopics)
   .get("/articles/:article_id", getArticleById)
   .patch("/articles/:article_id", patchArticle)
+  .post("/api/articles/:article_id/comments")
   .get("/users", getUsers)
   .all("/*", (req, res) => {
     res.status(404).send({ msg: "Path not found" });

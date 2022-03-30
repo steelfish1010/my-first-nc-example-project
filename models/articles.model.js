@@ -44,3 +44,17 @@ exports.updateArticle = async (body, article_id) => {
   );
   return res.rows[0];
 };
+
+exports.addCommentByArticleId = async (comment, article_id) => {
+  const { username, body } = comment;
+  const { rows } = await db.query(
+    `
+INSERT INTO comments
+(username, body)
+VALUES ($1,$2)
+RETURNING *;
+`,
+    [username, body]
+  );
+  return rows[0];
+};
