@@ -13,7 +13,7 @@ describe("TOPICS", () => {
       const res = await request(app).get("/api/topics").expect(200);
       expect(res.body.length).toBe(3);
       res.body.forEach((topic) => {
-        expect(topic).toEqual({
+        expect(topic).toMatchObject({
           slug: expect.any(String),
           description: expect.any(String),
         });
@@ -31,7 +31,7 @@ describe("ARTICLES", () => {
       const res = await request(app).get("/api/articles").expect(200);
       expect(res.body.articles).toHaveLength(12);
       res.body.articles.forEach((article) => {
-        expect(article).toEqual({
+        expect(article).toMatchObject({
           author: expect.any(String),
           title: expect.any(String),
           article_id: expect.any(Number),
@@ -57,7 +57,7 @@ describe("ARTICLES", () => {
   describe("GET /api/articles/:article_id", () => {
     test("200: returns copy of requested article object including comment count", async () => {
       const res = await request(app).get("/api/articles/9").expect(200);
-      expect(res.body.article).toEqual({
+      expect(res.body.article).toMatchObject({
         author: "butter_bridge",
         title: "They're not exactly dogs, are they?",
         article_id: 9,
@@ -97,7 +97,7 @@ describe("ARTICLES", () => {
         .expect(200);
       expect(res.body.comments).toHaveLength(2);
       res.body.comments.forEach((comment) => {
-        expect(comment).toEqual({
+        expect(comment).toMatchObject({
           comment_id: expect.any(Number),
           body: expect.any(String),
           article_id: expect.any(Number),
@@ -136,7 +136,7 @@ describe("ARTICLES", () => {
         .patch("/api/articles/1")
         .send(articleUpdate)
         .expect(200);
-      expect(res.body.updatedArticle).toEqual({
+      expect(res.body.updatedArticle).toMatchObject({
         author: "butter_bridge",
         title: "Living in the shadow of a great man",
         article_id: 1,
@@ -152,7 +152,7 @@ describe("ARTICLES", () => {
         .patch("/api/articles/1")
         .send(articleUpdate)
         .expect(200);
-      expect(res.body.updatedArticle).toEqual({
+      expect(res.body.updatedArticle).toMatchObject({
         author: "butter_bridge",
         title: "Living in the shadow of a great man",
         article_id: 1,
