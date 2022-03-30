@@ -90,7 +90,7 @@ describe("ARTICLES", () => {
       expect(res.body.msg).toBe("article_id is not a number");
     });
   });
-  describe.only("GET /api/articles/:article_id/comments", () => {
+  describe("GET /api/articles/:article_id/comments", () => {
     test("200: returns array of comments in the required format", async () => {
       const res = await request(app)
         .get("/api/articles/9/comments")
@@ -107,10 +107,26 @@ describe("ARTICLES", () => {
         });
       });
     });
+    test("200: article_id with zero comments returns an empty array", async () => {
+      const res = await request(app)
+        .get("/api/articles/4/comments")
+        .expect(200);
+      expect(res.body.comments).toHaveLength(0);
+    });
     test("404: article_id does not exist", async () => {
       const res = await request(app)
         .get("/api/articles/100/comments")
         .expect(404);
+      expect(res.body.msg).toBe("Invalid article_id");
+    });
+    test("400: article id is not a number", async () => {
+      const res = await request(app)
+        .get("/api/articles/cheese/comments")
+        .expect(400);
+      expect(res.body.msg).toBe("article_id is not a number");
+    });
+    test("404: incorrect path", async () => {
+      await request(app).get("/api/articles/1/comment").expect(404);
     });
   });
   describe("PATCH /api/articles/:article_id", () => {
