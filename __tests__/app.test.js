@@ -20,7 +20,8 @@ describe("TOPICS", () => {
       });
     });
     test("404: incorrect path returns 'path not found'", async () => {
-      await request(app).get("/api/topic").expect(404);
+      const res = await request(app).get("/api/topic").expect(404);
+      expect(res.body.msg).toBe("Path not found");
     });
   });
 });
@@ -51,7 +52,8 @@ describe("ARTICLES", () => {
       });
     });
     test("400: incorrect path", async () => {
-      await request(app).get("/api/article").expect(404);
+      const res = await request(app).get("/api/article").expect(404);
+      expect(res.body.msg).toBe("Path not found");
     });
   });
   describe("GET /api/articles/:article_id", () => {

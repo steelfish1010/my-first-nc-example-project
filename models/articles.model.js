@@ -1,7 +1,7 @@
 const db = require("../db/connection");
 
 exports.fetchArticles = async () => {
-  const res = await db.query(`
+  const { rows } = await db.query(`
   SELECT 
   articles.author,
       title,
@@ -15,14 +15,14 @@ exports.fetchArticles = async () => {
   GROUP BY articles.article_id
   ORDER BY articles.created_at DESC;
   `);
-  return res.rows;
+  return rows;
 };
 
 exports.fetchArticleById = async (article_id) => {
   if (!parseInt(article_id)) {
     return Promise.reject({ status: 400, msg: "article_id is not a number" });
   }
-  const res = await db.query(
+  const { rows } = await db.query(
     `
   SELECT 
   articles.author,
@@ -40,26 +40,26 @@ exports.fetchArticleById = async (article_id) => {
   `,
     [article_id]
   );
-  if (res.rows.length === 0) {
+  if (rows.length === 0) {
     return Promise.reject({ status: 404, msg: "Invalid article_id" });
   } else {
-    return res.rows[0];
+    return rows[0];
   }
 };
 
 exports.fetchCommentsByArticleId = async (article_id) => {
-  const res = await db.query(
+  const { rows } = await db.query(
     `
   SELECT * FROM comments
   WHERE article_id = $1`,
     [article_id]
   );
-  return res.rows;
+  return rows;
 };
 
 exports.updateArticleById = async (body, article_id) => {
   const votes = parseInt(body.inc_votes);
-  const res = await db.query(
+  const { rows } = await db.query(
     `
   UPDATE articles
   SET 
@@ -69,5 +69,5 @@ exports.updateArticleById = async (body, article_id) => {
   `,
     [votes, article_id]
   );
-  return res.rows[0];
+  return rows[0];
 };
