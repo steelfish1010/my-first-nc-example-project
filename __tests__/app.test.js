@@ -51,7 +51,7 @@ describe("ARTICLES", () => {
         coerce: true,
       });
     });
-    test("400: incorrect path", async () => {
+    test("404: incorrect path", async () => {
       const res = await request(app).get("/api/article").expect(404);
       expect(res.body.msg).toBe("Path not found");
     });
@@ -128,7 +128,10 @@ describe("ARTICLES", () => {
       expect(res.body.msg).toBe("article_id is not a number");
     });
     test("404: incorrect path", async () => {
-      await request(app).get("/api/articles/1/comment").expect(404);
+      const { body } = await request(app)
+        .get("/api/articles/1/comment")
+        .expect(404);
+      expect(body.msg).toBe("Path not found");
     });
   });
   describe("PATCH /api/articles/:article_id", () => {
