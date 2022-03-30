@@ -4,6 +4,7 @@ const {
   fetchArticles,
   fetchCommentsByArticleId,
 } = require("../models/articles.model");
+const { addCommentByArticleId } = require("../models/comments.model");
 
 exports.getArticles = async (req, res, next) => {
   try {
@@ -50,6 +51,18 @@ exports.patchArticleById = async (req, res, next) => {
     const results = await Promise.all(dbQueries);
     const updatedArticle = results[0];
     res.status(200).send({ updatedArticle });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.postCommentByArticleId = async (req, res, next) => {
+  try {
+    const { article_id } = req.params;
+    const { body } = req;
+    await fetchArticleById(article_id);
+    const comment = await addCommentByArticleId(body, article_id);
+    res.status(201).send({ comment });
   } catch (err) {
     next(err);
   }

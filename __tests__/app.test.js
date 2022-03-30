@@ -29,9 +29,9 @@ describe("TOPICS", () => {
 describe("ARTICLES", () => {
   describe("GET /api/articles", () => {
     test("200: returns array of article objects", async () => {
-      const res = await request(app).get("/api/articles").expect(200);
-      expect(res.body.articles).toHaveLength(12);
-      res.body.articles.forEach((article) => {
+      const { body } = await request(app).get("/api/articles").expect(200);
+      expect(body.articles).toHaveLength(12);
+      body.articles.forEach((article) => {
         expect(article).toMatchObject({
           author: expect.any(String),
           title: expect.any(String),
@@ -44,22 +44,22 @@ describe("ARTICLES", () => {
       });
     });
     test("200: articles are sorted by date order descending", async () => {
-      const res = await request(app).get("/api/articles").expect(200);
-      expect(res.body.articles).toBeSorted({
+      const { body } = await request(app).get("/api/articles").expect(200);
+      expect(body.articles).toBeSorted({
         key: "created_at",
         descending: true,
         coerce: true,
       });
     });
     test("404: incorrect path", async () => {
-      const res = await request(app).get("/api/article").expect(404);
-      expect(res.body.msg).toBe("Path not found");
+      const { body } = await request(app).get("/api/article").expect(404);
+      expect(body.msg).toBe("Path not found");
     });
   });
   describe("GET /api/articles/:article_id", () => {
     test("200: returns copy of requested article object including comment count", async () => {
-      const res = await request(app).get("/api/articles/9").expect(200);
-      expect(res.body.article).toMatchObject({
+      const { body } = await request(app).get("/api/articles/9").expect(200);
+      expect(body.article).toMatchObject({
         author: "butter_bridge",
         title: "They're not exactly dogs, are they?",
         article_id: 9,
@@ -71,8 +71,8 @@ describe("ARTICLES", () => {
       });
     });
     test("200: returns copy of requested article object which has zero comments", async () => {
-      const res = await request(app).get("/api/articles/2").expect(200);
-      expect(res.body.article).toEqual({
+      const { body } = await request(app).get("/api/articles/2").expect(200);
+      expect(body.article).toEqual({
         author: "icellusedkars",
         title: "Sony Vaio; or, The Laptop",
         article_id: 2,
@@ -84,21 +84,23 @@ describe("ARTICLES", () => {
       });
     });
     test("404; article id not in database", async () => {
-      const res = await request(app).get("/api/articles/765").expect(404);
-      expect(res.body.msg).toBe("Invalid article_id");
+      const { body } = await request(app).get("/api/articles/765").expect(404);
+      expect(body.msg).toBe("Invalid article_id");
     });
     test("400: article_id is not a number", async () => {
-      const res = await request(app).get("/api/articles/cheese").expect(400);
-      expect(res.body.msg).toBe("article_id is not a number");
+      const { body } = await request(app)
+        .get("/api/articles/cheese")
+        .expect(400);
+      expect(body.msg).toBe("article_id is not a number");
     });
   });
   describe("GET /api/articles/:article_id/comments", () => {
     test("200: returns array of comments in the required format", async () => {
-      const res = await request(app)
+      const { body } = await request(app)
         .get("/api/articles/9/comments")
         .expect(200);
-      expect(res.body.comments).toHaveLength(2);
-      res.body.comments.forEach((comment) => {
+      expect(body.comments).toHaveLength(2);
+      body.comments.forEach((comment) => {
         expect(comment).toMatchObject({
           comment_id: expect.any(Number),
           body: expect.any(String),
@@ -110,22 +112,22 @@ describe("ARTICLES", () => {
       });
     });
     test("200: article_id with zero comments returns an empty array", async () => {
-      const res = await request(app)
+      const { body } = await request(app)
         .get("/api/articles/4/comments")
         .expect(200);
-      expect(res.body.comments).toHaveLength(0);
+      expect(body.comments).toHaveLength(0);
     });
     test("404: article_id does not exist", async () => {
-      const res = await request(app)
+      const { body } = await request(app)
         .get("/api/articles/100/comments")
         .expect(404);
-      expect(res.body.msg).toBe("Invalid article_id");
+      expect(body.msg).toBe("Invalid article_id");
     });
     test("400: article id is not a number", async () => {
-      const res = await request(app)
+      const { body } = await request(app)
         .get("/api/articles/cheese/comments")
         .expect(400);
-      expect(res.body.msg).toBe("article_id is not a number");
+      expect(body.msg).toBe("article_id is not a number");
     });
     test("404: incorrect path", async () => {
       const { body } = await request(app)
@@ -137,11 +139,11 @@ describe("ARTICLES", () => {
   describe("PATCH /api/articles/:article_id", () => {
     test("200: responds with a copy of the updated article object", async () => {
       const articleUpdate = { inc_votes: 1 };
-      const res = await request(app)
+      const { body } = await request(app)
         .patch("/api/articles/1")
         .send(articleUpdate)
         .expect(200);
-      expect(res.body.updatedArticle).toMatchObject({
+      expect(body.updatedArticle).toMatchObject({
         author: "butter_bridge",
         title: "Living in the shadow of a great man",
         article_id: 1,
@@ -153,11 +155,11 @@ describe("ARTICLES", () => {
     });
     test("200: decreases votes by required number", async () => {
       const articleUpdate = { inc_votes: -1 };
-      const res = await request(app)
+      const { body } = await request(app)
         .patch("/api/articles/1")
         .send(articleUpdate)
         .expect(200);
-      expect(res.body.updatedArticle).toMatchObject({
+      expect(body.updatedArticle).toMatchObject({
         author: "butter_bridge",
         title: "Living in the shadow of a great man",
         article_id: 1,
@@ -169,58 +171,114 @@ describe("ARTICLES", () => {
     });
     test("404: article_id not in database", async () => {
       const articleUpdate = { inc_votes: 1 };
-      const res = await request(app)
+      const { body } = await request(app)
         .patch("/api/articles/100")
         .send(articleUpdate)
         .expect(404);
-      expect(res.body.msg).toBe("Invalid article_id");
+      expect(body.msg).toBe("Invalid article_id");
     });
     test("400: article_id is not a number", async () => {
       const articleUpdate = { inc_votes: 1 };
-      const res = await request(app)
+      const { body } = await request(app)
         .patch("/api/articles/cat")
         .send(articleUpdate)
         .expect(400);
-      expect(res.body.msg).toBe("article_id is not a number");
+      expect(body.msg).toBe("article_id is not a number");
     });
     test("400: patch body does not contain inc_votes key", async () => {
       const articleUpdate = { votes: 1 };
-      const res = await request(app)
+      const { body } = await request(app)
         .patch("/api/articles/1")
         .send(articleUpdate)
         .expect(400);
-      expect(res.body.msg).toBe("invalid request");
+      expect(body.msg).toBe("invalid request");
     });
     test("400: inc_votes value is not number", async () => {
       const articleUpdate = { inc_votes: "hello" };
-      const res = await request(app)
+      const { body } = await request(app)
         .patch("/api/articles/1")
         .send(articleUpdate)
         .expect(400);
-      expect(res.body.msg).toBe("invalid request");
+      expect(body.msg).toBe("invalid request");
+    });
+  });
+  describe("POST /api/articles/:article_id/comments", () => {
+    test("201: returns a copy of the posted article", async () => {
+      const comment = { username: "butter_bridge", body: "This is a comment" };
+      const { body } = await request(app)
+        .post("/api/articles/9/comments")
+        .send(comment)
+        .set("Accept", "application/json")
+        .expect(201);
+      expect(body.comment).toMatchObject({
+        comment_id: expect.any(Number),
+        body: "This is a comment",
+        article_id: 9,
+        author: "butter_bridge",
+        votes: 0,
+        created_at: expect.any(String),
+      });
+    });
+    test("404: article_id does not exist", async () => {
+      const comment = { username: "butter_bridge", body: "This is a comment" };
+      const { body } = await request(app)
+        .post("/api/articles/100/comments")
+        .send(comment)
+        .expect(404);
+      expect(body.msg).toBe("Invalid article_id");
+    });
+    test("400: article_id not a number", async () => {
+      const comment = { username: "butter_bridge", body: "This is a comment" };
+      const { body } = await request(app)
+        .post("/api/articles/cheese/comments")
+        .send(comment)
+        .expect(400);
+      expect(body.msg).toBe("article_id is not a number");
+    });
+    test("400: post body does not include the keys of username and body", async () => {
+      const comment = {
+        cheese: "butter_bridge",
+        biscuits: "This is a comment",
+      };
+      const { body } = await request(app)
+        .post("/api/articles/1/comments")
+        .send(comment)
+        .expect(400);
+      expect(body.msg).toBe("posted body is incomplete");
+    });
+    test("400: no body posted", async () => {
+      const { body } = await request(app)
+        .post("/api/articles/1/comments")
+        .send()
+        .expect(400);
+      expect(body.msg).toBe("posted body is incomplete");
+    });
+    test("400: values in posted object are not required type", async () => {
+      const comment = { username: 10, body: true };
+      const { body } = await request(app)
+        .post("/api/articles/1/comments")
+        .send(comment)
+        .expect(400);
+      expect(body.msg).toBe("invalid request");
     });
   });
 });
 
 describe("USERS", () => {
   describe("GET /api/users", () => {
-    test("200: returns array of user objects", () => {
-      return request(app)
-        .get("/api/users")
-        .expect(200)
-        .then((res) => {
-          expect(res.body.users.length).toBe(4);
-          expect(res.body.users[1]).toEqual({ username: "icellusedkars" });
-          res.body.users.forEach((user) => {
-            expect(user).toEqual({
-              username: expect.any(String),
-            });
-          });
+    test("200: returns array of user objects", async () => {
+      const { body } = await request(app).get("/api/users").expect(200);
+      expect(body.users.length).toBe(4);
+      expect(body.users[1]).toEqual({ username: "icellusedkars" });
+      body.users.forEach((user) => {
+        expect(user).toEqual({
+          username: expect.any(String),
         });
+      });
     });
     test("404: incorrect file path", async () => {
-      const res = await request(app).get("/api/user").expect(404);
-      expect(res.body.msg).toBe("Path not found");
+      const { body } = await request(app).get("/api/user").expect(404);
+      expect(body.msg).toBe("Path not found");
     });
   });
 });
