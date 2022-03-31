@@ -18,10 +18,21 @@ exports.fetchArticles = async (
   ];
   order = order.toUpperCase();
   const validOrder = ["ASC", "DESC"];
-  const dbQueries = [
-    db.query(`SELECT slug FROM topics;`),
-    db.query(`SELECT username FROM users`),
-  ];
+
+  if (topic) {
+    const topics = await db.query(`SELECT slug FROM topics;`);
+    const validTopics = topics.rows.map((topic) => topic.slug);
+    if (!validTopics.includes(topic)) {
+      return Promise.reject({ status: 400, msg: "Topic does not exist" });
+    }
+  }
+  if (author) {
+    const authors = await db.query(`SELECT username FROM users`);
+    const validAuthors = authors.rows.map((author) => author.username);
+    if (!validAuthors.includes(author)) {
+      return Promise.reject({ status: 400, msg: "Author does not exist" });
+    }
+  }
 
   if (!validColumns.includes(sort_by) || !validOrder.includes(order)) {
     return Promise.reject({ status: 400, msg: "Invalid query" });

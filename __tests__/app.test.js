@@ -340,11 +340,11 @@ describe("QUERIES for GET /api/articles", () => {
         expect(article.topic).toBe("mitch");
       });
     });
-    test("404: topic value does not exist", async () => {
+    test("400: topic value does not exist", async () => {
       const { body } = await request(app)
         .get("/api/articles?topic=cheese")
-        .expect(404);
-      expect(body.msg).toBe("No articles found with that query");
+        .expect(400);
+      expect(body.msg).toBe("Topic does not exist");
     });
   });
   describe("filter by author", () => {
@@ -356,11 +356,11 @@ describe("QUERIES for GET /api/articles", () => {
         expect(article.author).toBe("rogersop");
       });
     });
-    test("404: author value does not exist", async () => {
+    test("400: author value does not exist", async () => {
       const { body } = await request(app)
         .get("/api/articles?author=bob")
-        .expect(404);
-      expect(body.msg).toBe("No articles found with that query");
+        .expect(400);
+      expect(body.msg).toBe("Author does not exist");
     });
   });
 });
