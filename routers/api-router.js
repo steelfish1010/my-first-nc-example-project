@@ -7,20 +7,22 @@ const {
 } = require("../controllers/articles.controller");
 const { getTopics } = require("../controllers/topics.controller");
 const { getUsers } = require("../controllers/users.controller");
+const articlesRouter = require("./articles-router");
+const topicsRouter = require("./topics-router");
+const usersRouter = require("./users-router");
 
 const apiRouter = require("express").Router();
+
+apiRouter
+  .use("/topics", topicsRouter)
+  .use("/articles", articlesRouter)
+  .use("/users", usersRouter);
 
 apiRouter
   .get("/", (req, res) => {
     res.status(200).send({ msg: "All OK from API router" });
   })
-  .get("/topics", getTopics)
-  .get("/articles", getArticles)
-  .get("/articles/:article_id", getArticleById)
-  .get("/articles/:article_id/comments", getCommentsByArticleId)
-  .post("/articles/:article_id/comments", postCommentByArticleId)
-  .patch("/articles/:article_id", patchArticleById)
-  .get("/users", getUsers)
+  // .get("/users", getUsers)
   .all("/*", (req, res) => {
     res.status(404).send({ msg: "Path not found" });
   });
