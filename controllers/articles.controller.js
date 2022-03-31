@@ -7,9 +7,10 @@ const {
 const { addCommentByArticleId } = require("../models/comments.model");
 
 exports.getArticles = async (req, res, next) => {
-  const { sort_by } = req.query;
+  let { sort_by, order, topic, author } = req.query;
+
   try {
-    const articles = await fetchArticles(sort_by);
+    const articles = await fetchArticles(sort_by, order, topic, author);
     res.status(200).send({ articles });
   } catch (err) {
     next(err);

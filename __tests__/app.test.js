@@ -282,103 +282,85 @@ describe("USERS", () => {
     });
   });
 });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
-describe.only("QUERIES for GET /api/articles", () => {
-  test("200: sorts by provided column value", async () => {
-    const { body } = await request(app)
-      .get("/api/articles?sort_by=votes")
-      .expect(200);
+describe("QUERIES for GET /api/articles", () => {
+  describe("sort_by", () => {
+    test("200: sorts by provided column value", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?sort_by=votes")
+        .expect(200);
 
-    expect(body.articles).toBeSorted({
-      key: "votes",
-      descending: true,
+      expect(body.articles).toBeSorted({
+        key: "votes",
+        descending: true,
+      });
+    });
+    test("200: sorts by another column value", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?sort_by=author")
+        .expect(200);
+      expect(body.articles).toBeSorted({
+        key: "author",
+        descending: true,
+      });
+    });
+    test("400: sort_by is not a valid column", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?sort_by=cheese")
+        .expect(400);
+      expect(body.msg).toBe("Invalid query");
     });
   });
-  test("200: sorts by another column value", async () => {
-    const { body } = await request(app)
-      .get("/api/articles?sort_by=author")
-      .expect(200);
-    expect(body.articles).toBeSorted({
-      key: "author",
-      descending: true,
+  describe("order", () => {
+    test("200: ?order=ASC or DESC orders results accordingly", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?order=ASC")
+        .expect(200);
+      expect(body.articles).toBeSortedBy("created_at");
+    });
+    test("400: invalid order value", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?order=cheese")
+        .expect(400);
+      expect(body.msg).toBe("Invalid query");
+    });
+    test("200: order by is case insensitive", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?order=asc")
+        .expect(200);
+      expect(body.articles).toBeSortedBy("created_at");
     });
   });
-  test("400: sort_by is not a valid column", async () => {
-    const { body } = await request(app)
-      .get("/api/articles?sort_by=cheese")
-      .expect(400);
-    expect(body.msg).toBe("Invalid sort_by");
+  describe("filter by TOPIC", () => {
+    test("200: results are filtered by valid topic", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200);
+      body.articles.forEach((article) => {
+        expect(article.topic).toBe("mitch");
+      });
+    });
+    test("404: topic value does not exist", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?topic=cheese")
+        .expect(404);
+      expect(body.msg).toBe("No articles found with that query");
+    });
+  });
+  describe("filter by author", () => {
+    test("200: results are filtered by valid author", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?author=rogersop")
+        .expect(200);
+      body.articles.forEach((article) => {
+        expect(article.author).toBe("rogersop");
+      });
+    });
+    test("404: author value does not exist", async () => {
+      const { body } = await request(app)
+        .get("/api/articles?author=bob")
+        .expect(404);
+      expect(body.msg).toBe("No articles found with that query");
+    });
   });
 });
