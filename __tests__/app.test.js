@@ -298,6 +298,6 @@ describe.only("COMMENTS", () => {
     const { body } = await request(app)
       .delete("/api/comments/cheese")
       .expect(400);
-    expect(body.msg).toBe("comment_id is not a number");
+    expect(body.msg).toBe("invalid request");
   });
 });

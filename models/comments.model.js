@@ -24,14 +24,11 @@ exports.addCommentByArticleId = async (comment, article_id) => {
 };
 
 exports.removeCommentById = async (comment_id) => {
-  if (!parseInt(comment_id)) {
-    return Promise.reject({ status: 400, msg: "comment_id is not a number" });
-  }
-  const { rows } = await db.query(`SELECT comment_id FROM comments;`);
-  const validCommentIds = rows.map((id) => id.comment_id.toString());
-  if (!validCommentIds.includes(comment_id)) {
+  const { rows } = await db.query(
+    `DELETE FROM comments WHERE comment_id = $1 RETURNING *;`,
+    [comment_id]
+  );
+  if (rows.length === 0) {
     return Promise.reject({ status: 404, msg: "comment_id does not exist" });
-  } else {
-    await db.query(`DELETE FROM comments WHERE comment_id = $1`, [comment_id]);
   }
 };
