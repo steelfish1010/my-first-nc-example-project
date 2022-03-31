@@ -1,6 +1,8 @@
+const { deleteComment } = require("../controllers/comments.controller");
+
 const commentsRouter = require("express").Router();
 
-commentsRouter.all("/*", (req, res) => {
+commentsRouter.delete("/:comment_id", deleteComment).all("/*", (req, res) => {
   res.status(404).send({ msg: "Path not found" });
 });
 
