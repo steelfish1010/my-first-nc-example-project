@@ -9,6 +9,7 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+  "GET /api/users": {},
   "GET /api/articles": {
     "description": "serves an array of all topics",
     "queries": ["author", "topic", "sort_by", "order"],
@@ -23,5 +24,11 @@
         }
       ]
     }
-  }
+  },
+  "GET /api/articles/:article_id" :{},
+  "GET /api/articles/:article_id/comments" :{},
+  "POST /api/articles/:article_id/comments" :{},
+  "PATCH /api/articles/:article_id" :{},
+  "DELETE /api/comments/:comment_id": {}
+
 }
