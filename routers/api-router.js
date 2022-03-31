@@ -3,6 +3,7 @@ const {
   patchArticleById,
   getArticles,
   getCommentsByArticleId,
+  postCommentByArticleId,
 } = require("../controllers/articles.controller");
 const { getTopics } = require("../controllers/topics.controller");
 const { getUsers } = require("../controllers/users.controller");
@@ -17,6 +18,7 @@ apiRouter
   .get("/articles", getArticles)
   .get("/articles/:article_id", getArticleById)
   .get("/articles/:article_id/comments", getCommentsByArticleId)
+  .post("/articles/:article_id/comments", postCommentByArticleId)
   .patch("/articles/:article_id", patchArticleById)
   .get("/users", getUsers)
   .all("/*", (req, res) => {
