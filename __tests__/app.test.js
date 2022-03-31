@@ -224,3 +224,103 @@ describe("USERS", () => {
     });
   });
 });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+describe.only("QUERIES for GET /api/articles", () => {
+  test("200: sorts by provided column value", async () => {
+    const { body } = await request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200);
+
+    expect(body.articles).toBeSorted({
+      key: "votes",
+      descending: true,
+    });
+  });
+  test("200: sorts by another column value", async () => {
+    const { body } = await request(app)
+      .get("/api/articles?sort_by=author")
+      .expect(200);
+    expect(body.articles).toBeSorted({
+      key: "author",
+      descending: true,
+    });
+  });
+  test("400: sort_by is not a valid column", async () => {
+    const { body } = await request(app)
+      .get("/api/articles?sort_by=cheese")
+      .expect(400);
+    expect(body.msg).toBe("Invalid sort_by");
+  });
+});

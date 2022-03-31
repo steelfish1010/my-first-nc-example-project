@@ -6,7 +6,6 @@ const {
 } = require("../controllers/articles.controller");
 const { getTopics } = require("../controllers/topics.controller");
 const { getUsers } = require("../controllers/users.controller");
-const { fetchCommentsByArticleId } = require("../models/articles.model");
 
 const apiRouter = require("express").Router();
 
