@@ -283,6 +283,25 @@ describe("USERS", () => {
   });
 });
 
+describe("COMMENTS", () => {
+  describe("DELETE /api/comments/:comment_id", () => {
+    test("204: deletes comment", async () => {
+      await request(app).delete("/api/comments/4").expect(204);
+    });
+    test("404: comment id does not exist", async () => {
+      const { body } = await request(app)
+        .delete("/api/comments/5993")
+        .expect(404);
+    });
+  });
+  test("400: comment_id is not a number", async () => {
+    const { body } = await request(app)
+      .delete("/api/comments/cheese")
+      .expect(400);
+    expect(body.msg).toBe("invalid request");
+  });
+});
+
 describe("QUERIES for GET /api/articles", () => {
   describe("sort_by", () => {
     test("200: sorts by provided column value", async () => {
