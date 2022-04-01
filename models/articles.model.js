@@ -1,7 +1,44 @@
 const db = require("../db/connection");
+const format = require("pg-format");
 
-exports.fetchArticles = async () => {
-  const { rows } = await db.query(`
+exports.fetchArticles = async (
+  sort_by = "created_at",
+  order = "DESC",
+  topic,
+  author
+) => {
+  const validColumns = [
+    "article_id",
+    "title",
+    "topic",
+    "author",
+    "body",
+    "created_at",
+    "votes",
+  ];
+  order = order.toUpperCase();
+  const validOrder = ["ASC", "DESC"];
+
+  if (topic) {
+    const topics = await db.query(`SELECT slug FROM topics;`);
+    const validTopics = topics.rows.map((topic) => topic.slug);
+    if (!validTopics.includes(topic)) {
+      return Promise.reject({ status: 400, msg: "Topic does not exist" });
+    }
+  }
+  if (author) {
+    const authors = await db.query(`SELECT username FROM users`);
+    const validAuthors = authors.rows.map((author) => author.username);
+    if (!validAuthors.includes(author)) {
+      return Promise.reject({ status: 400, msg: "Author does not exist" });
+    }
+  }
+
+  if (!validColumns.includes(sort_by) || !validOrder.includes(order)) {
+    return Promise.reject({ status: 400, msg: "Invalid query" });
+  }
+
+  let queryStr = `
   SELECT 
   articles.author,
       title,
@@ -11,10 +48,38 @@ exports.fetchArticles = async () => {
       articles.votes,
       COUNT(comment_id)::INTEGER AS comment_count
   FROM articles 
-  LEFT JOIN comments ON articles.article_id = comments.article_id
+  LEFT JOIN comments ON articles.article_id = comments.article_id`;
+
+  let queryValues = [];
+  let queryCount = 0;
+  if (topic) {
+    queryCount++;
+    queryStr += ` WHERE topic = $1`;
+    queryValues.push(topic);
+  }
+
+  if (author) {
+    queryCount++;
+    if (queryCount === 1) {
+      queryStr += ` WHERE articles.author = $1`;
+    } else {
+      queryStr += ` AND articles.author = $${queryCount}`;
+    }
+    queryValues.push(author);
+  }
+
+  queryStr += ` 
   GROUP BY articles.article_id
-  ORDER BY articles.created_at DESC;
-  `);
+  ORDER BY ${sort_by} ${order};
+  `;
+
+  const { rows } = await db.query(queryStr, queryValues);
+  if (rows.length === 0) {
+    return Promise.reject({
+      status: 404,
+      msg: "No articles found with that query",
+    });
+  }
   return rows;
 };
 
