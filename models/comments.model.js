@@ -29,6 +29,24 @@ exports.removeCommentById = async (comment_id) => {
     [comment_id]
   );
   if (rows.length === 0) {
-    return Promise.reject({ status: 404, msg: "comment_id does not exist" });
+    return Promise.reject({ status: 404, msg: "comment_id not found" });
   }
+};
+
+exports.updateCommentById = async (inc_votes, comment_id) => {
+  if (!parseInt(comment_id)) {
+    return Promise.reject({ status: 400, msg: "comment_id is not a number" });
+  }
+  const { rows } = await db.query(
+    `
+  UPDATE comments
+  SET votes = votes + $1
+  WHERE comment_id = $2 
+  RETURNING *;`,
+    [inc_votes, comment_id]
+  );
+  if (rows.length === 0) {
+    return Promise.reject({ status: 404, msg: "comment_id not found" });
+  }
+  return rows[0];
 };
