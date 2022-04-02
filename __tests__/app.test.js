@@ -289,6 +289,27 @@ describe("USERS", () => {
       expect(body.msg).toBe("Path not found");
     });
   });
+  describe("GET /api/users/:username", () => {
+    test("200: returns user object with required details", async () => {
+      const { body } = await request(app)
+        .get("/api/users/rogersop")
+        .expect(200);
+      expect(body.user).toMatchObject({
+        username: "rogersop",
+        name: "paul",
+        avatar_url:
+          "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+      });
+    });
+
+    test("404: username not found", async () => {
+      const { body } = await request(app)
+        .get("/api/users/bluecheese")
+        .expect(404);
+      console.log(body.msg, "<< body.msg in test");
+      expect(body.msg).toBe("Username not found");
+    });
+  });
 });
 
 describe("COMMENTS", () => {
