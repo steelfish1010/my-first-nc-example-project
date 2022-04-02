@@ -136,3 +136,20 @@ exports.updateArticleById = async (body, article_id) => {
   );
   return rows[0];
 };
+
+exports.addArticle = async (article) => {
+  const { author, body, title, topic } = article;
+  console.log(article, "<< article in model");
+  const { rows } = await db.query(
+    `
+  INSERT INTO articles
+  (author, title, body, topic)
+  VALUES ($1, $2,$3,$4)
+  RETURNING *;
+  `,
+    [author, title, body, topic]
+  );
+  const { article_id } = rows[0];
+
+  return await this.fetchArticleById(article_id);
+};

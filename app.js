@@ -13,6 +13,7 @@ app.all("/*", () => {
 
 // PSQL errors
 app.use((err, req, res, next) => {
+  console.log(err, "<< err in app");
   const badReqCodes = ["22P02", "23503", "23502"];
   if (badReqCodes.includes(err.code)) {
     res.status(400).send({ msg: "invalid request" });

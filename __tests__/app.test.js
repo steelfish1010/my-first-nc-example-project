@@ -4,6 +4,7 @@ const testData = require("../db/data/test-data/index");
 const request = require("supertest");
 const app = require("../app");
 const endpointsTest = require("../endpoints.json");
+const req = require("express/lib/request");
 
 afterAll(() => db.end());
 beforeEach(() => seed(testData));
@@ -270,6 +271,30 @@ describe("ARTICLES", () => {
       expect(body.msg).toBe("invalid request");
     });
   });
+  describe.only("POST /api/articles", () => {
+    test("201: returns copy of new article in correct format", async () => {
+      const newArticle = {
+        author: "lurker",
+        title: " My new article on cats",
+        body: "This is a cracking new article",
+        topic: "cats",
+      };
+      const { body } = await request(app)
+        .post("/api/articles")
+        .send(newArticle)
+        .expect(201);
+      expect(body.article).toMatchObject({
+        author: "lurker",
+        title: " My new article on cats",
+        article_id: 13,
+        body: "This is a cracking new article",
+        topic: "cats",
+        created_at: expect.any(String),
+        votes: 0,
+        comment_count: 0,
+      });
+    });
+  });
 });
 
 describe("USERS", () => {
@@ -306,7 +331,6 @@ describe("USERS", () => {
       const { body } = await request(app)
         .get("/api/users/bluecheese")
         .expect(404);
-      console.log(body.msg, "<< body.msg in test");
       expect(body.msg).toBe("Username not found");
     });
   });
@@ -329,7 +353,7 @@ describe("COMMENTS", () => {
       .expect(400);
     expect(body.msg).toBe("invalid request");
   });
-  describe.only("PATCH /api/comments/:comment_id", () => {
+  describe("PATCH /api/comments/:comment_id", () => {
     test("200: returns copy of updated comment object", async () => {
       const { body } = await request(app)
         .patch("/api/comments/1")

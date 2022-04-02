@@ -4,6 +4,7 @@ const {
   getCommentsByArticleId,
   postCommentByArticleId,
   patchArticleById,
+  postArticle,
 } = require("../controllers/articles.controller");
 
 const articlesRouter = require("express").Router();
@@ -14,6 +15,7 @@ articlesRouter
   .get("/:article_id/comments", getCommentsByArticleId)
   .post("/:article_id/comments", postCommentByArticleId)
   .patch("/:article_id", patchArticleById)
+  .post("/", postArticle)
   .all("/*", (req, res) => {
     res.status(404).send({ msg: "Path not found" });
   });
