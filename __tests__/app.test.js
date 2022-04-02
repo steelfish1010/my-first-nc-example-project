@@ -3,6 +3,7 @@ const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
 const request = require("supertest");
 const app = require("../app");
+const endpointsTest = require("../endpoints.json");
 
 afterAll(() => db.end());
 beforeEach(() => seed(testData));
@@ -381,5 +382,12 @@ describe("QUERIES for GET /api/articles", () => {
         .expect(400);
       expect(body.msg).toBe("Author does not exist");
     });
+  });
+});
+
+describe("GET /api", () => {
+  test("200: return endpoints.json file", async () => {
+    const { body } = await request(app).get("/api").expect(200);
+    expect(body.endpoints).toEqual(endpointsTest);
   });
 });
