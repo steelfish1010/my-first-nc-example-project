@@ -11,6 +11,7 @@ const articlesRouter = require("./articles-router");
 const commentsRouter = require("./comments-router");
 const topicsRouter = require("./topics-router");
 const usersRouter = require("./users-router");
+const endpoints = require("../endpoints.json");
 
 const apiRouter = require("express").Router();
 
@@ -22,7 +23,7 @@ apiRouter
 
 apiRouter
   .get("/", (req, res) => {
-    res.status(200).send({ msg: "All OK from API router" });
+    res.status(200).send({ endpoints });
   })
   .all("/*", (req, res) => {
     res.status(404).send({ msg: "Path not found" });
