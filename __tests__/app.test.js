@@ -329,6 +329,54 @@ describe("COMMENTS", () => {
       .expect(400);
     expect(body.msg).toBe("invalid request");
   });
+  describe.only("PATCH /api/comments/:comment_id", () => {
+    test("200: returns copy of updated comment object", async () => {
+      const { body } = await request(app)
+        .patch("/api/comments/1")
+        .send({ inc_votes: 10 })
+        .expect(200);
+      expect(body.comment).toMatchObject({
+        comment_id: 1,
+        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        article_id: 9,
+        author: "butter_bridge",
+        votes: 26,
+        created_at: expect.any(String),
+      });
+    });
+    test("404: comment_id does not exist", async () => {
+      const { body } = await request(app)
+        .patch("/api/comments/192525")
+        .send({ inc_votes: 10 })
+        .expect(404);
+      expect(body.msg).toBe("comment_id not found");
+    });
+    test("400: comment_id is not a number", async () => {
+      const { body } = await request(app)
+        .patch("/api/comments/cheese")
+        .send({ inc_votes: 10 })
+        .expect(400);
+      expect(body.msg).toBe("comment_id is not a number");
+    });
+    test("400: no body included", async () => {
+      const { body } = await request(app).patch("/api/comments/1").expect(400);
+      expect(body.msg).toBe("invalid request");
+    });
+    test("400: body does not include inc_votes key", async () => {
+      const { body } = await request(app)
+        .patch("/api/comments/1")
+        .send({ votes: 10 })
+        .expect(400);
+      expect(body.msg).toBe("invalid request");
+    });
+    test("400: inc_votes value is not a number", async () => {
+      const { body } = await request(app)
+        .patch("/api/comments/1")
+        .send({ inc_votes: "bananas" })
+        .expect(400);
+      expect(body.msg).toBe("invalid request");
+    });
+  });
 });
 
 describe("QUERIES for GET /api/articles", () => {
