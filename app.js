@@ -2,10 +2,12 @@ const express = require("express");
 const { getTopics } = require("./controllers/topics.controller");
 const app = express();
 const apiRouter = require("./routers/api-router");
+const cors = require('cors')
 
-app.use(express.json());
-
-app.use("/api", apiRouter);
+app
+  .use(cors())
+  .use(express.json())
+  .use("/api", apiRouter);
 
 app.all("/*", () => {
   res.status(404).send({ msg: "Path not found" });

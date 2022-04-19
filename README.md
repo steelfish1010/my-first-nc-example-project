@@ -15,5 +15,5 @@ You will need to add environment variables to work with a clone of this project.
 .env.test
 PGDATABASE=nc_news_test
 
-.env.developement
+.env.development
 PGDATABASE=nc_news
